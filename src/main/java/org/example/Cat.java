@@ -8,7 +8,7 @@ public class Cat {
     public Cat(int x, int y) {
         this.x = x;
         this.y = y;
-        width = 60;
-        height = 60;
+        width = 64;
+        height = 64;
     }
 }

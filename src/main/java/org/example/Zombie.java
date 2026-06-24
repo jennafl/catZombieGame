@@ -9,8 +9,8 @@ public class Zombie {
     public Zombie(int x, int y) {
         this.x = x;
         this.y = y;
-        width = 50;
-        height = 50;
+        width = 80;
+        height = 80;
         speed = 2;
     }
 }
