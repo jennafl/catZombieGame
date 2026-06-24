@@ -36,6 +36,9 @@ public class Main extends JPanel implements KeyListener {
 
     int currentZombieFrame = 0;
 
+    BufferedImage houseImage;
+    BufferedImage backgroundImage;
+
     public Main() {
 
         JFrame frame = new JFrame("Cat Zombie Defense");
@@ -47,7 +50,7 @@ public class Main extends JPanel implements KeyListener {
 
         frame.addKeyListener(this);
 
-        // cat initilization
+        // cat import
         try {
 
             BufferedImage catSheet =
@@ -58,11 +61,7 @@ public class Main extends JPanel implements KeyListener {
             for (int i = 0; i < 4; i++) {
 
                 catFrames[i] =
-                        catSheet.getSubimage(
-                                i * 32,
-                                0,
-                                32,
-                                32
+                        catSheet.getSubimage(i * 32, 0, 32, 32
                         );
             }
 
@@ -70,7 +69,7 @@ public class Main extends JPanel implements KeyListener {
             e.printStackTrace();
         }
 
-        // zombie initilization
+        // zombie import
         try {
 
             BufferedImage zombieSheet =
@@ -81,13 +80,33 @@ public class Main extends JPanel implements KeyListener {
             for (int i = 0; i < 4; i++) {
 
                 zombieFrames[i] =
-                        zombieSheet.getSubimage(
-                                i * 32,
-                                0,
-                                32,
-                                32
+                        zombieSheet.getSubimage(i * 32, 0, 32, 32
                         );
             }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // house import
+        try {
+
+            houseImage =
+                    ImageIO.read(
+                            getClass().getResource("/images/house.png")
+                    );
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //background import
+        try {
+
+            backgroundImage =
+                    ImageIO.read(
+                            getClass().getResource("/images/background.png")
+                    );
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -121,13 +140,16 @@ public class Main extends JPanel implements KeyListener {
             cat.y += 5;
         }
 
-        // keep cat on screen
-        if (cat.y < 0) {
-            cat.y = 0;
+        // keep cat on ground
+        int topLimit = 300;
+        int bottomLimit = 450;
+
+        if (cat.y < topLimit) {
+            cat.y = topLimit;
         }
 
-        if (cat.y > getHeight() - cat.height) {
-            cat.y = getHeight() - cat.height;
+        if (cat.y > bottomLimit) {
+            cat.y = bottomLimit;
         }
 
         // move lasers
@@ -138,7 +160,9 @@ public class Main extends JPanel implements KeyListener {
         // move zombies
         if (spawnCounter >= 100) {
 
-            int randomY = (int)(Math.random() * (getHeight() - 50));
+            int groundY = 350;
+
+            int randomY = groundY + (int)(Math.random() * 40) - 20;
 
             zombies.add(new Zombie(800, randomY));
 
@@ -252,8 +276,8 @@ public class Main extends JPanel implements KeyListener {
     public void draw(Graphics g) {
 
         // background
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, getWidth(), getHeight());
+        g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), null
+        );
 
         // cat
         g.drawImage(
@@ -276,6 +300,9 @@ public class Main extends JPanel implements KeyListener {
             g.fillRect(laser.x, laser.y, 20, 5
             );
         }
+    // scoreboard
+        g.setColor(new Color(0, 0, 0, 150));
+        g.fillRect(10, 10, 250, 100);
 
         //scoreboard
         g.setColor(Color.WHITE);
@@ -284,8 +311,8 @@ public class Main extends JPanel implements KeyListener {
         g.setColor(Color.WHITE);
         g.drawString("House Health: " + houseHealth, 20, 40);
 
-        g.setColor(Color.GRAY);
-        g.fillRect(20, 250, 60, 100);
+        g.drawImage(houseImage, 20, 300, 100, 100, null
+        );
 
         //game over screen
         if (gameOver) {
